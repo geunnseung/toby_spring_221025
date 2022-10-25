@@ -7,9 +7,11 @@ import java.util.Map;
 
 public class UserDao {
     private ConnectionMaker cm;
+
     public UserDao() {
         this.cm = new AwsConnectionMaker();
     }
+
     public UserDao(ConnectionMaker cm) {
         this.cm = cm;
     }
@@ -49,9 +51,12 @@ public class UserDao {
 
             // Query문 실행
             ResultSet rs = pstmt.executeQuery();
-            rs.next();
-            User user = new User(rs.getString("id"), rs.getString("name"),
-                    rs.getString("password"));
+            User user = null;
+            if (rs.next()) {
+                user = new User(rs.getString("id"), rs.getString("name"),
+                        rs.getString("password"));
+            }
+            if(user==null) throw new EmptyResultDataAccessException(1);
 
             rs.close();
             pstmt.close();
@@ -59,15 +64,9 @@ public class UserDao {
 
             return user;
 
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static void main(String[] args) {
-
-        UserDao userDao = new UserDao();
-        User user = userDao.findById("6");
-        System.out.println(user.getName());
-    }
 }
