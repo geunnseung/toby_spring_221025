@@ -19,15 +19,14 @@ public class UserDao {
     public void add(User user) {
         Map<String, String> env = System.getenv();
         try {
-            // DB접속 (ex sql workbeanch실행)
+
             Connection c = cm.makeConnection();
-            // Query문 작성
+
             PreparedStatement pstmt = c.prepareStatement("INSERT INTO users(id, name, password) VALUES(?,?,?);");
             pstmt.setString(1, user.getId());
             pstmt.setString(2, user.getName());
             pstmt.setString(3, user.getPassword());
 
-            // Query문 실행
             pstmt.executeUpdate();
 
             pstmt.close();
@@ -42,22 +41,21 @@ public class UserDao {
         Map<String, String> env = System.getenv();
         Connection c;
         try {
-            // DB접속 (ex sql workbeanch실행)
+            )
             c = cm.makeConnection();
 
-            // Query문 작성
             PreparedStatement pstmt = c.prepareStatement("SELECT * FROM users WHERE id = ?");
             pstmt.setString(1, id);
 
-            // Query문 실행
             ResultSet rs = pstmt.executeQuery();
             User user = null;
+
             if (rs.next()) {
                 user = new User(rs.getString("id"), rs.getString("name"),
                         rs.getString("password"));
             }
-            if(user==null) throw new EmptyResultDataAccessException(1);
 
+            if(user==null) throw new EmptyResultDataAccessException(1);
             rs.close();
             pstmt.close();
             c.close();
